@@ -1,0 +1,43 @@
+<idea-plugin version="1">
+  <id>com.RedTeam.unique.plugin.id</id>
+  <name>SQLHelper</name>
+  <version>0.81</version>
+  <vendor email="red4help@gmail.com">RedTeam</vendor>
+
+  <description><![CDATA[
+      SQLHelper is a simple tool for generation Java code to work with SQLite database.
+      The following features are available:<br>
+      <hr>
+      <ul>
+        <li>Generation of Java code that implements the basic functions to work with databases : update, delete, insert and select</li>
+        <li>Generation of Java code that uses sqlite-jdbc 3.7.2</li>
+        <li>Generation of Java code that uses Android SDK</li>
+        <li>Editing database on the device or on your computer</li>
+        <li>Push or Pull database file using Android Debug Bridge</li>
+        <li>Creating SQL queries</li>
+        <li>Device monitor, which will help you navigate the connected device or emulator</li>
+      </ul>
+      <hr>
+      Requirements<br>
+      <hr>
+      <ul>
+        <li>Android Debug Bridge 1.0.32</li>
+        <li>Root access on device</li>
+        <li>sqlite3 on device</li>
+      </ul>
+      <hr>
+    ]]></description>
+
+  <idea-version since-build="131"/>
+  <extensions defaultExtensionNs="com.intellij"/>
+
+  <actions>
+      <action id="codeGenerator"
+              class="Start"
+              text="Code Generator"
+              description="Code Generator"
+              icon="res/icon16x16/S-icon.png">
+          <add-to-group group-id="MainToolBar" anchor="last" />
+      </action>
+  </actions>
+</idea-plugin>

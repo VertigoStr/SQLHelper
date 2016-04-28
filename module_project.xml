@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_project" default="compile.module.project">
+  <dirname property="module.project.basedir" file="${ant.file.module_project}"/>
+  
+  <property name="module.jdk.home.project" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.project" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.project" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.project" value="-encoding UTF-8 -source 1.6 ${compiler.args}"/>
+  
+  <property name="project.output.dir" value="${module.project.basedir}/out/production/Project"/>
+  <property name="project.testoutput.dir" value="${module.project.basedir}/out/test/Project"/>
+  
+  <path id="project.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  <path id="classpath">
+    <fileset dir="${idea.home}/sqlite-jdbc-3.7.2.jar">
+      <include name="sqlite-jdbc-3.7.2.jar"/>
+    </fileset>
+  </path>
+  
+  <path id="project.module.production.classpath">
+    <path refid="${module.jdk.classpath.project}"/>
+    <path refid="library.sqlite-jdbc-3.7.2.classpath"/>
+  </path>
+  
+  <path id="project.runtime.production.module.classpath">
+    <pathelement location="${project.output.dir}"/>
+    <path refid="library.sqlite-jdbc-3.7.2.classpath"/>
+  </path>
+  
+  <path id="project.module.classpath">
+    <path refid="${module.jdk.classpath.project}"/>
+    <pathelement location="${project.output.dir}"/>
+    <path refid="library.sqlite-jdbc-3.7.2.classpath"/>
+  </path>
+  
+  <path id="project.runtime.module.classpath">
+    <pathelement location="${project.testoutput.dir}"/>
+    <pathelement location="${project.output.dir}"/>
+    <path refid="library.sqlite-jdbc-3.7.2.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.project">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.project">
+    <patternset refid="excluded.from.module.project"/>
+  </patternset>
+  
+  <path id="project.module.sourcepath">
+    <dirset dir="${module.project.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.project" depends="compile.module.project.production,compile.module.project.tests" description="Compile module Project"/>
+  
+  <target name="compile.module.project.production" depends="register.custom.compilers" description="Compile module Project; production classes">
+    <mkdir dir="${project.output.dir}"/>
+    <javac2 destdir="${project.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.project}/javac">
+      <compilerarg line="${compiler.args.project}"/>
+      <bootclasspath refid="project.module.bootclasspath"/>
+      <classpath refid="project.module.production.classpath"/>
+      <src refid="project.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.project"/>
+    </javac2>
+    
+    <copy todir="${project.output.dir}">
+      <fileset dir="${module.project.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.project.tests" depends="register.custom.compilers,compile.module.project.production" description="compile module Project; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.project" description="cleanup module">
+    <delete dir="${project.output.dir}"/>
+    <delete dir="${project.testoutput.dir}"/>
+  </target>
+  
+  <property name="project.plugin.path.jar" value="${module.project.basedir}/Project.zip"/>
+  
+  <!-- Build archive for plugin 'Project' -->
+  <target name="plugin.build.jar.project" depends="compile.module.project" description="Build plugin archive for module &#39;Project&#39;">
+    <property name="tmp.dir.project" value="${module.project.basedir}/../temp"/>
+    <mkdir dir="${tmp.dir.project}"/>
+    <mkdir dir="${tmp.dir.project}/lib"/>
+    <jar destfile="${tmp.dir.project}/lib/Project.jar" duplicate="preserve">
+      <zipfileset dir="${module.project.basedir}/out/production/Project"/>
+      <zipfileset file="${module.project.basedir}/META-INF/plugin.xml" prefix="META-INF"/>
+      <manifest>
+        <attribute name="Created-By" value="IntelliJ IDEA"/>
+        <attribute name="Manifest-Version" value="1.0"/>
+      </manifest>
+    </jar>
+    <copy file="${module.project.basedir}/lib/sqlite-jdbc-3.7.2.jar" tofile="${tmp.dir.project}/lib/sqlite-jdbc-3.7.2.jar"/>
+    <zip destfile="${project.plugin.path.jar}">
+      <fileset dir="${module.project.basedir}/../temp"/>
+    </zip>
+    <delete dir="${tmp.dir.project}"/>
+  </target>
+</project>
