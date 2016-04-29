@@ -1,5 +1,5 @@
 # SQLHelper
-SQLHelper is a simple tool for generation Java code to work with SQLite database.The following features are available:<br>
+[SQLHelper](https://plugins.jetbrains.com/plugin/8329?pr=idea) is a simple tool for generation Java code to work with SQLite database.The following features are available:<br>
       <hr>
       <ul>
         <li>Generation of Java code that implements the basic functions to work with databases : update, delete, insert and select</li>
